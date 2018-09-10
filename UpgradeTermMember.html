@@ -1,0 +1,40 @@
+﻿<h1>UpgradeTermMember</h1>
+
+<p>Click the button below to upgrade this member from term membership to annual membership.</p>
+
+First Name: <p id="firstNameId"></p>
+Surname: <p id="surnameId"></p>
+Email: <p id="emailId"></p>
+
+<button class="btn" id="submit">Upgrade</button>
+
+<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+<script src="./site.js"></script>
+<script>
+    const database = firebaseInit();
+    const provider = authenticationProviderInit();
+
+    const id = getUrlParameter("id");
+
+    getMembershipData(function (data) {
+        const firstName = data.firstName;
+        const surname = data.surname;
+        const email = data.email;
+
+        document.getElementById("firstNameId").textContent = firstName;
+        document.getElementById("surnameId").textContent = surname;
+        document.getElementById("emailId").textContent = email;
+    }, id);
+
+    document.getElementById("submit").onclick = function () { upgradeMember(id); };
+
+    function upgradeMember(id) {
+        firebase.database().ref('Members/').child(id).update({
+            membershipType: "Annual"
+        }).then(function () {
+            window.location.href = successLocation + "?from=upgrade";
+        }).catch(function () {
+            window.location.href = errorLocation;
+        });
+    }
+</script>

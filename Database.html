@@ -1,0 +1,169 @@
+﻿<h1>Database</h1>
+
+<p><a href="/~climbing/MEMBERSHIP_DATABASE/Index.html">Membership Form</a></p>
+
+<button class="btn showIfAuthorised" id="download">Download Backup</button>
+<button class="btn showIfAuthorised" id="rollover">Rollover</button>
+
+<div>
+    <table id="membership-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Surname</th>
+                <th>Date of Birth</th>
+                <th>Affiliation</th>
+                <th>College</th>
+                <th>Phone Number</th>
+                <th>Address 1</th>
+                <th>Address 2</th>
+                <th>Town</th>
+                <th>County</th>
+                <th>Postcode</th>
+                <th>Email</th>
+                <th>Emergancy Contact Name</th>
+                <th>Emergancy Contact Phone Number</th>
+                <th>Membership Type</th>
+                <th>Date on Form</th>
+                <th>Authorised By</th>
+                <th>Submitted By</th>
+                <th>Timestamp</th>
+                <th class="showIfAuthorised"></th>
+                <th class="showIfAuthorised"></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+<script src="./site.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script>
+    const database = firebaseInit();
+    const provider = authenticationProviderInit();
+
+    getMembershipData(function (data) {
+        for (id in data) {
+            var tableRef = document.getElementById("membership-table").getElementsByTagName("tbody")[0];
+
+            var newRow = tableRef.insertRow(tableRef.rows.length);
+            newRow.id = id;
+
+            var firstNameCell = newRow.insertCell(0);
+            var surnameCell = newRow.insertCell(1);
+            var dobCell = newRow.insertCell(2);
+            var affiliationCell = newRow.insertCell(3);
+            var collegeCell = newRow.insertCell(4);
+            var phoneNumberCell = newRow.insertCell(5);
+            var address1Cell = newRow.insertCell(6);
+            var address2Cell = newRow.insertCell(7);
+            var townCell = newRow.insertCell(8);
+            var countyCell = newRow.insertCell(9);
+            var postcodeCell = newRow.insertCell(10);
+            var emailCell = newRow.insertCell(11);
+            var emergancyContactNameCell = newRow.insertCell(12);
+            var emergancyContactPhoneNumberCell = newRow.insertCell(13);
+            var membershipTypeCell = newRow.insertCell(14);
+            var dateOnFormCell = newRow.insertCell(15);
+            var authorisedByCell = newRow.insertCell(16);
+            var submittedByCell = newRow.insertCell(17);
+            var timestampCell = newRow.insertCell(18);
+            var editCell = newRow.insertCell(19);
+            var deleteCell = newRow.insertCell(20);
+
+            var firstNameNode = document.createTextNode(data[id].firstName);
+            var surnameNode = document.createTextNode(data[id].surname);
+            var dobNode = document.createTextNode(formatTimestamp(data[id].dob));
+            var affiliationNode = document.createTextNode(data[id].affiliation);
+            var collegeNode = document.createTextNode(data[id].college);
+            var phoneNumberNode = document.createTextNode(data[id].phoneNumber);
+            var address1Node = document.createTextNode(data[id].address1);
+            var address2Node = document.createTextNode(data[id].address2);
+            var townNode = document.createTextNode(data[id].town);
+            var countyNode = document.createTextNode(data[id].county);
+            var postcodeNode = document.createTextNode(data[id].postcode);
+            var emailNode = document.createTextNode(data[id].email);
+            var emergancyContactNameNode = document.createTextNode(data[id].emergancyContactName);
+            var emergancyContactPhoneNumberNode = document.createTextNode(data[id].emergancyContactPhoneNumber);
+            var membershipTypeNode = document.createTextNode(data[id].membershipType);
+            var dateOnFormNode = document.createTextNode(formatTimestamp(data[id].dateOnForm));
+            var authorisedByNode = document.createTextNode(data[id].authorisedBy);
+            var submittedByNode = document.createTextNode(data[id].submittedBy);
+            var timestampNode = document.createTextNode(formatTimestamp(data[id].timestamp));
+
+            var editNode = document.createElement("button");
+            editNode.classList.add("btn");
+            var editText = document.createTextNode("Edit");
+            editNode.appendChild(editText);
+			editNode.style.display = "none";
+			editNode.classList.add("showIfAuthorised");
+
+            var locallyScopedID = id; //Done so that each edit button in the form is linked to the relevant (and not last) id variable
+			(function (i) {
+				editNode.onclick = function () {
+					goToEditPage(i);
+				};
+			})(locallyScopedID);
+
+            var deleteNode = document.createElement("button");
+            deleteNode.classList.add("btn");
+            var deleteText = document.createTextNode("Delete");
+            deleteNode.appendChild(deleteText);
+			deleteNode.style.display = "none";
+			deleteNode.classList.add("showIfAuthorised");
+			
+			(function (i) {
+				deleteNode.onclick = function () {
+					deleteRecord(i);
+				};
+			})(locallyScopedID);
+
+            firstNameCell.appendChild(firstNameNode);
+            surnameCell.appendChild(surnameNode);
+            dobCell.appendChild(dobNode);
+            affiliationCell.appendChild(affiliationNode);
+            collegeCell.appendChild(collegeNode);
+            phoneNumberCell.appendChild(phoneNumberNode);
+            address1Cell.appendChild(address1Node);
+            address2Cell.appendChild(address2Node);
+            townCell.appendChild(townNode);
+            countyCell.appendChild(countyNode);
+            postcodeCell.appendChild(postcodeNode);
+            emailCell.appendChild(emailNode);
+            emergancyContactNameCell.appendChild(emergancyContactNameNode);
+            emergancyContactPhoneNumberCell.appendChild(emergancyContactPhoneNumberNode);
+            membershipTypeCell.appendChild(membershipTypeNode);
+            dateOnFormCell.appendChild(dateOnFormNode);
+            authorisedByCell.appendChild(authorisedByNode);
+            submittedByCell.appendChild(submittedByNode);
+            timestampCell.appendChild(timestampNode);
+            editCell.appendChild(editNode);
+            deleteCell.appendChild(deleteNode);
+        }
+		
+		var divsToHide = document.getElementsByClassName("showIfAuthorised");
+		for(var j = 0; j < divsToHide.length; j++){
+			divsToHide[j].style.display = "none";
+		}
+		
+		registerAuthChecking(unhideEditControls, emptyFunction, unhideEditControls, emptyFunction);
+
+    });
+
+    document.getElementById("download").onclick = function () {
+        getMembershipData(function (data) {
+            downloadObjectAsJson(data, "OUMC Database Backup " + formatTimestamp(Date.now()));
+        });
+    };
+
+    document.getElementById("rollover").onclick = function () {
+        window.location.href = "Rollover.html";
+    }
+	
+	function unhideEditControls() {
+		var divsToShow = document.getElementsByClassName("showIfAuthorised");
+		for(var j = 0; j < divsToShow.length; j++){
+			divsToShow[j].style.display = "block";
+		}
+	}
+</script>

@@ -1,0 +1,116 @@
+﻿<h1>Edit Page</h1>
+
+<p><a href="/~climbing/MEMBERSHIP_DATABASE/Database.html">Database</a></p>
+<p><a href="/~climbing/MEMBERSHIP_DATABASE/Index.html">Membership Form</a></p>
+
+<div class="input-group">
+    <p>First Name: <input id="first-name-input" class="input-sm" /></p>
+    <p>Surname: <input id="surname-input" class="input-sm" /></p>
+    <p>Date of Birth: <input type="date" id="dob-input" class="input-sm" /></p>
+    <p>
+        Affiliation:
+        <select id="affiliation-input" class="input-sm">
+            <option value="">(Please Select)</option>
+            <option value="Student">Student</option>
+            <option value="Staff">Staff</option>
+            <option value="External">External</option>
+        </select>
+    </p>
+    <p>
+        College:
+        <select id="college-input" class="input-sm">
+            <option value="">None</option>
+            <option value="Jesus">Jesus</option>
+            <option value="Exeter">Exeter</option>
+            <option value="Christ Church">Christ Church</option>
+        </select>
+    </p>
+    <p>Phone Number: <input id="phone-number-input" class="input-sm" /></p>
+    <p>Address 1: <input id="address-1-input" class="input-sm" /></p>
+    <p>Address 2: <input id="address-2-input" class="input-sm" /></p>
+    <p>Town: <input id="town-input" class="input-sm" /></p>
+    <p>County: <input id="county-input" class="input-sm" /></p>
+    <p>Postcode: <input id="postcode-input" class="input-sm" /></p>
+    <p>Email: <input id="email-input" type="email" class="input-sm"></p>
+    <p>Emergency Contact Name: <input id="emergancy-contact-name-input" class="input-sm" /></p>
+    <p>Emergency Contact Phone Number: <input id="emergancy-contact-phone-number-input" class="input-sm" /></p>    
+    <p>Membership Type: <input id="membership-type-input" class="input-sm" /></p>
+    <p>Date on Form: <input type="date" id="date-on-form-input" class="input-sm" /></p>
+    <p>Authorised By: <input id="authorised-by-input" class="input-sm" /></p>
+    <p>Submitted By: <input id="submitted-by-input" class="input-sm" /></p>
+    <button id="submit" class="btn">Submit</button>
+</div>
+<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="./site.js"></script>
+<script>
+    const database = firebaseInit();
+    const provider = authenticationProviderInit();
+
+    getMembershipData(function (data) {
+        document.getElementById("first-name-input").value = data.firstName;
+        document.getElementById("surname-input").value = data.surname;
+        document.getElementById("dob-input").value = formatTimestampReverse(data.dob);
+        document.getElementById("affiliation-input").value = data.affiliation;
+        document.getElementById("college-input").value = data.college;
+        document.getElementById("phone-number-input").value = data.phoneNumber;
+        document.getElementById("address-1-input").value = data.address1;
+        document.getElementById("address-2-input").value = data.address2;
+        document.getElementById("town-input").value = data.town;
+        document.getElementById("county-input").value = data.county;
+        document.getElementById("postcode-input").value = data.postcode;
+        document.getElementById("email-input").value = data.email;
+        document.getElementById("emergancy-contact-name-input").value = data.emergancyContactName;
+        document.getElementById("emergancy-contact-phone-number-input").value = data.emergancyContactPhoneNumber;        
+        document.getElementById("membership-type-input").value = data.membershipType;
+        document.getElementById("date-on-form-input").value = formatTimestampReverse(data.dateOnForm);
+        document.getElementById("authorised-by-input").value = data.authorisedBy;
+        document.getElementById("submitted-by-input").value = data.submittedBy;
+    }, getUrlParameter("id"));
+
+    document.getElementById("submit").onclick = function () {
+        const firstName = document.getElementById("first-name-input").value;
+        const surname = document.getElementById("surname-input").value;
+        const dob = document.getElementById("dob-input").value;
+        const affiliation = document.getElementById("affiliation-input").value;
+        const college = document.getElementById("college-input").value;
+        const phoneNumber = document.getElementById("phone-number-input").value;
+        const address1 = document.getElementById("address-1-input").value;
+        const address2 = document.getElementById("address-2-input").value;
+        const town = document.getElementById("town-input").value;
+        const county = document.getElementById("county-input").value;
+        const postcode = document.getElementById("postcode-input").value;
+        const email = document.getElementById("email-input").value;
+        const emergancyContactName = document.getElementById("emergancy-contact-name-input").value;
+        const emergancyContactPhoneNumber = document.getElementById("emergancy-contact-phone-number-input").value;        
+        const membershipType = document.getElementById("membership-type-input").value;
+        const dateOnForm = document.getElementById("date-on-form-input").value;
+        const authorisedBy = document.getElementById("authorised-by-input").value;
+        const submittedBy = document.getElementById("submitted-by-input").value;
+
+        firebase.database().ref('Members/').child(getUrlParameter("id")).update({
+            firstName: firstName,
+            surname: surname,
+            dob: Date.parse(dob),
+            affiliation: affiliation,
+            college: college,
+            phoneNumber: phoneNumber,
+            address1: address1,
+            address2: address2,
+            town: town,
+            county: county,
+            postcode: postcode,
+            email: email,
+            emergancyContactName: emergancyContactName,
+            emergancyContactPhoneNumber: emergancyContactPhoneNumber,            
+            membershipType: membershipType,
+            dateOnForm: Date.parse(dateOnForm),
+            authorisedBy: authorisedBy,
+            submittedBy: submittedBy,
+        }).then(function () {
+            window.location.href = successLocation + "?from=edit";
+        }).catch(function () {
+            window.location.href = errorLocation;
+        });
+    }
+</script>

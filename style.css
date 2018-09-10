@@ -1,0 +1,89 @@
+html,body {
+    font-family: arial;
+    font-size: 16px;
+    color: #428bca;
+}
+
+form {
+    display: none;
+}
+
+button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    border-bottom: 2px solid #428bca;
+    padding: 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+    transition: all .2s linear;
+}
+button:hover {
+    background: #428bca;
+    color: white;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    background: white;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: 0;
+    font-weight: normal;
+    padding: 12px 18px;
+}
+.select-wrapper {
+    position: relative;
+}
+.select-wrapper::after {
+    pointer-events: none;
+    position: absolute;
+    right: 30px;
+    top: 15px;
+    content: '';
+    width: 0;
+    height: 0;
+    -webkit-transform: rotateZ(-45deg);
+    -moz-transform: rotateZ(-45deg);
+    -ms-transform: rotateZ(-45deg);
+    -o-transform: rotateZ(-45deg);
+    transform: rotateZ(-45deg);
+    border-left: 10px solid black;
+    border-top: 10px solid transparent;
+}
+
+.error {
+    border: 1px solid red;
+}
+.error-msg {
+    color: red;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.input-group {
+    max-width: 400px;
+    margin: auto;
+}
+.input-wrapper {
+    display: block;
+    font-weight: bold;
+    margin: 15px 0;
+}
+.input-wrapper .input-sm {
+    display: block;
+    width: 100%;
+    padding: 12px 18px;
+    margin-top: 5px;
+    min-width: 200px;
+    font-size: 18px;
+    color: #444444;
+}
+
+.hidden{
+display:none;
+visibility:hidden;
+}

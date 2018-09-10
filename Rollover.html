@@ -1,0 +1,71 @@
+﻿<h1>Rollover</h1>
+
+<div>
+    
+
+    <h2>Steps</h2>
+    <ol>
+        <li>Check with the rest of the committee that the database is no longer needed for anything this year (particularly meets, and courses/comps).</li>
+        <li>Ensure that nobody on the committee has entered any sign-up forms for coming year - if they have then they must be re-entered.</li>
+        <li>Download a backup file using the "download backup" button on the previous page. Save this file to your own computer, email it as an attachment to president@oumc.co.uk, and also save it on the google drive in <strong>OUMC/Database/Secure Area</strong>.</li>
+        <li>Check the spreadsheet backups of the database on the google drive (using the secretary gmail account), and ensure there is a recent one. This is in addition to the backup file you downloaded in the previous step.</li>
+		<li>Ensure you are logged in to the secretary gmail account before you press the button - this authenticates you to complete the rollover.</li>
+        <li>Enter the code from the secretary handover notes, and then click the button. This will empty the database and ready it for receiving next years members. </li> <!--If the code is lost for whatever reason the superuser account will be able to proceed without it.-->
+		<li>Email the climbers list with the statement that memberships have rolled over, and that insurance through the club expires on 1st October.</li>
+		
+    </ol>
+    Code <input id="code" class="input-sm" />
+    <button class="btn" id="rollover">Rollover</button>
+    <div id="error" style="font-style: italic; color: red;"></div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+<script src="./site.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script>
+    const database = firebaseInit();
+    const provider = authenticationProviderInit();
+
+    let isSuperuser = false;
+
+    registerAuthChecking(
+        function () {
+            isSuperuser = true;
+        },
+        function () {
+            signInWithRedirect(emptyFunction);
+        },
+        emptyFunction,
+        function () {
+            signInWithRedirect(emptyFunction);
+        });
+
+    document.getElementById("rollover").onclick = function () {
+        let code = document.getElementById("code").value;
+        if (code === rolloverCode) {
+            rollover();
+        }
+        else {
+            if (isSuperuser) {
+                if (confirm("Incorrect code, however you are using the superuser account so may proceed anyway. Are you sure you want to continue?")) {
+                    rollover();
+                }
+            }
+            else {
+                let node = document.createElement("P");
+                var textnode = document.createTextNode("Incorrect Code");
+                node.appendChild(textnode);
+                document.getElementById("error").appendChild(node);
+            }
+        }
+    }
+
+    function rollover() {
+        firebase.database().ref(membersTableRoot).remove()
+        .then(function () {
+            window.location.href = successLocation + "?from=rollover"
+        })
+        .catch(function () {
+            window.location.href = errorLocation;
+        })
+    }
+</script>

@@ -1,0 +1,71 @@
+﻿<h1>Upgrade Term Members</h1>
+
+<p><a href="/~climbing/MEMBERSHIP_DATABASE/Index.html">Membership Form</a></p>
+
+<div>
+    <table id="membership-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th>Membership Type</th>
+                <th>Upgrade</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+<script src="./site.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script>
+    const database = firebaseInit();
+    const provider = authenticationProviderInit();
+
+    getMembershipData(function (data) {
+        for (id in data) {
+            var tableRef = document.getElementById("membership-table").getElementsByTagName("tbody")[0];
+
+            var newRow = tableRef.insertRow(tableRef.rows.length);
+            newRow.id = id;
+
+            var firstNameCell = newRow.insertCell(0);
+            var surnameCell = newRow.insertCell(1);
+            var emailCell = newRow.insertCell(2);
+            var membershipTypeCell = newRow.insertCell(3);
+            var upgradeCell = newRow.insertCell(4);
+
+            var firstNameNode = document.createTextNode(data[id].firstName);
+            var surnameNode = document.createTextNode(data[id].surname);
+            var emailNode = document.createTextNode(data[id].email);
+            var membershipTypeNode = document.createTextNode(data[id].membershipType);
+
+            if (termMembershipTypes.indexOf(data[id].membershipType) === -1) {
+                var upgradeNode = document.createTextNode("Not a Term Member");
+                upgradeCell.appendChild(upgradeNode);
+            }
+            else {
+                var upgradeNode = document.createElement("button");
+                upgradeNode.classList.add("btn");
+                var upgradeText = document.createTextNode("Upgrade");
+                upgradeNode.appendChild(upgradeText);
+
+                var locallyScopedID = id; //Done so that each upgrade button in the form is linked to the relevant (and not last) id variable
+                
+				(function (i) {
+				upgradeNode.onclick = function () {
+					window.location.href = upgradeTermMemberLocation + "?id=" + i;
+				};
+				})(locallyScopedID);
+
+                upgradeCell.appendChild(upgradeNode);
+            }
+
+            firstNameCell.appendChild(firstNameNode);
+            surnameCell.appendChild(surnameNode);
+            emailCell.appendChild(emailNode);
+            membershipTypeCell.appendChild(membershipTypeNode);
+        }
+    });
+</script>

@@ -1,0 +1,53 @@
+﻿<h1>Success!</h1>
+<div id="body">
+    <div id="OutputMessage">
+    </div>
+    <br><br>
+    <button class="btn" id="AddMember">Add New Member</button>
+</div>
+<script src="./site.js"></script>
+<script>
+    let redirectedFrom = getUrlParameter("from");
+    let message;
+
+    if (redirectedFrom === "edit") {
+        message = "Successfully edited member.";
+
+        document.getElementById("AddMember").onclick = function () {
+            window.location.href = addMemberFormLocation;
+        }
+
+    }
+    else if (redirectedFrom === "add") {
+        message = "Successfully added member.";
+        document.getElementById("AddMember").onclick = function () {
+            window.location.href = addMemberFormLocation;
+        }
+
+
+    }
+    else if (redirectedFrom === "rollover") {
+        message = "Rollover successful! You may begin adding new members.";
+
+        document.getElementById("AddMember").onclick = function () {
+            window.location.href = addMemberFormLocation;
+        }
+
+    }
+    else if (redirectedFrom === "upgrade") {
+        message = "Successfully upgraded member.";
+
+        document.getElementById("AddMember").onclick = function () {
+            window.location.href = addMemberFormLocation;
+        }
+    }
+    else {
+        window.location.href = errorLocation;
+    }
+
+    let node = document.createElement("DIV");
+    var textnode = document.createTextNode(message);
+    node.appendChild(textnode);
+    document.getElementById("OutputMessage").appendChild(node);
+
+</script>
